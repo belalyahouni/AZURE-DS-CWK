@@ -75,13 +75,18 @@ def generate_http(req: func.HttpRequest) -> func.HttpResponse:
             pass
 
     # return JSON for endpoint
+    response_json = {
+    "inserted": len(readings),
+    "timestamp": utc_timestamp.isoformat(),
+    "readings": readings      # ← THIS IS THE NEW PART
+    }
+
     return func.HttpResponse(
-        body=str({
-            "inserted": len(readings),
-            "timestamp": utc_timestamp.isoformat()
-        }),
+        json.dumps(response_json, indent=2),
+        mimetype="application/json",
         status_code=200
     )
+
 
 # Function to calculate staticstics (task 2)
 @app.route(route="stats", auth_level=func.AuthLevel.ANONYMOUS)
